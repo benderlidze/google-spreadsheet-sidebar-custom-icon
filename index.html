@@ -124,6 +124,15 @@
             align-content: center;
             align-items: center;
             justify-content: center;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .bottom-left {
+            position: absolute;
+            bottom: 8px;
+            left: 16px;
+            color: white
         }
     </style>
 </head>
@@ -248,12 +257,17 @@
 
                 const div = document.createElement("div")
                 div.className = "images"
+                const bdiv = document.createElement("div")
+                bdiv.className = "bottom-left"
+                bdiv.innerText = images.length + " photos";
+
                 const image = document.createElement("img")
                 image.src = pin['Image1']
                 image.addEventListener("click", () => {
                     openLightBox(images)
                 })
                 div.appendChild(image)
+                div.appendChild(bdiv)
 
 
                 html = `<div>
