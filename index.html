@@ -4,6 +4,7 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://d3js.org/d3.v7.min.js"></script>
+
     <style>
         body {
             font-family: "Lato", sans-serif;
@@ -18,24 +19,10 @@
             z-index: 1;
             top: 0;
             left: 0;
-            background-color: #111;
             overflow-x: hidden;
             transition: 0.5s;
-            padding-top: 60px;
         }
 
-        .sidebar a {
-            padding: 8px 8px 8px 32px;
-            text-decoration: none;
-            font-size: 25px;
-            color: #818181;
-            display: block;
-            transition: 0.3s;
-        }
-
-        .sidebar a:hover {
-            color: #f1f1f1;
-        }
 
         .sidebar .closebtn {
             position: absolute;
@@ -46,9 +33,7 @@
         }
 
         .openbtn {
-            font-size: 20px;
             cursor: pointer;
-            background-color: #111;
             color: white;
             padding: 10px 15px;
             border: none;
@@ -62,15 +47,83 @@
             transition: margin-left .5s;
         }
 
+        .title {
+            padding: 20px 10px;
+            background-color: #02499b;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .title>i {
+            padding-right: 30px;
+        }
+
+        .img {
+            height: 200px;
+            max-height: 200px;
+            overflow: hidden;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .descr {
+            padding: 10px;
+        }
+
         /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
         @media screen and (max-height: 450px) {
-            .sidebar {
-                padding-top: 15px;
-            }
+            .sidebar {}
+        }
 
-            .sidebar a {
-                font-size: 18px;
-            }
+
+        .gg-arrow-left {
+            box-sizing: border-box;
+            position: relative;
+            display: block;
+            transform: scale(var(--ggs, 1));
+            width: 22px;
+            height: 22px;
+            cursor: pointer;
+
+        }
+
+        .gg-arrow-left::after,
+        .gg-arrow-left::before {
+            content: "";
+            display: block;
+            box-sizing: border-box;
+            position: absolute;
+            left: 3px
+        }
+
+        .gg-arrow-left::after {
+            width: 8px;
+            height: 8px;
+            border-bottom: 2px solid;
+            border-left: 2px solid;
+            transform: rotate(45deg);
+            bottom: 7px
+        }
+
+        .gg-arrow-left::before {
+            width: 16px;
+            height: 2px;
+            bottom: 10px;
+            background: currentColor
+        }
+
+        .images {
+            width: 100%;
+            max-height: 120px;
+            overflow: hidden;
+            display: flex;
+            align-content: center;
+            align-items: center;
+            justify-content: center;
         }
     </style>
 </head>
@@ -78,11 +131,8 @@
 <body>
 
     <div id="mySidebar" class="sidebar">
-        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
-        <a href="#">About</a>
-        <a href="#">Services</a>
-        <a href="#">Clients</a>
-        <a href="#">Contact</a>
+        <!-- <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a> -->
+
     </div>
 
     <div id="main">
@@ -103,7 +153,6 @@
         // var input = document.getElementById('searchTextField');
         // const pannel = document.getElementById("pannel")
         // const info = document.getElementById("info")
-        // const modal = document.getElementById("modal")
 
         // const drivers = [];
         // const driverNames = [];
@@ -113,6 +162,7 @@
         // const markersInPoly = [];
         // let counts = {};
 
+        const sidebar = document.getElementById("mySidebar")
         const mainData = {
             data: [],
             markers: []
@@ -176,67 +226,80 @@
                     const content = `
                     <div>
                         <h3> 
-                        ${pin['Address']}, 
-                        ${pin['City']}, 
-                        ${pin['Panel Location']}</h3>
+                        ${pin['Name']}
+                        </h3>
                     </div>`
                     infowindow.setContent(content);
                     infowindow.open(map, marker);
-                });
 
+                    displayInfo(pin)
+                });
                 return marker
             }
 
-            // var options = {
-            //     componentRestrictions: { country: "us" }
-            // };
+            function displayInfo(pin) {
+                console.log('pin', pin);
+
+                const images = [...Array(20)].map((d, key) => {
+                    return pin['Image' + key]
+                }).filter(d => d)
+
+                console.log('images', images);
+
+                const div = document.createElement("div")
+                div.className = "images"
+                const image = document.createElement("img")
+                image.src = pin['Image1']
+                image.addEventListener("click", () => {
+                    openLightBox(images)
+                })
+                div.appendChild(image)
 
 
-            // document.addEventListener("click", e => {
-            //     console.log('e.target', e.target);
+                html = `<div>
+                        <div class="img">
+                            <img src="${pin['Image1']}">    
+                        </div>
+                        <div class="title">
+                            <i class="gg-arrow-left" onclick="closeNav()"></i>
+                            ${pin.Name}
+                        </div>
+                        <div class="descr">${pin.Description}</div>
+                    </div>
+                `
+                sidebar.innerHTML = html
+                sidebar.appendChild(div)
 
-            //     if (e.target.classList.contains("item")) {
-            //         const data = e.target.dataset.address
-            //         console.log('data', data);
-            //         buildDirections(data)
-            //     }
+                openNav()
+                refreshFsLightbox()
+            }
+        }
 
-            //     if (e.target.classList.contains("removeAddresses")) {
-            //         info.style.display = 'none'
-            //     }
-
-            //     if (e.target.classList.contains("removeDirections")) {
-            //         document.getElementById('directions').innerHTML = '';
-            //     }
-
-            //     if (e.target.classList.contains("resetMap")) {
-
-            //         if (searchMarker) searchMarker.setMap(null)
-            //         allMarkers.forEach(marker => marker.setMap(null)) // clear prev markers
-            //         map.setCenter(mapCenter)
-            //         map.setZoom(mapZoom)
-
-            //         pannel.style.display = 'none'
-            //         input.value = '';
-            //     }
-            // })
-
+        function openLightBox(data) {
+            console.log('data', data);
+            var lightbox = new FsLightbox();
+            lightbox.props.sources = data;
+            lightbox.props.type = "image";
+            lightbox.open();
         }
 
         function openNav() {
-            document.getElementById("mySidebar").style.width = "250px";
-            document.getElementById("main").style.marginLeft = "250px";
+            document.getElementById("mySidebar").style.width = "350px";
+            document.getElementById("main").style.marginLeft = "350px";
         }
 
         function closeNav() {
             document.getElementById("mySidebar").style.width = "0";
             document.getElementById("main").style.marginLeft = "0";
         }
+
     </script>
 
     <script
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAoyZ_yVsI5N8KhjbWRyQeme1Pfz2DRYYc&callback=initMap&libraries=places,drawing,geometry&v=weekly"
         async></script>
+
+    <script src="fslightbox.js"></script>
 </body>
 
 </html>
