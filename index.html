@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body {
+            font-family: "Lato", sans-serif;
+            padding: 0px;
+            margin: 0px;
+        }
+
+        .sidebar {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: #111;
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 60px;
+        }
+
+        .sidebar a {
+            padding: 8px 8px 8px 32px;
+            text-decoration: none;
+            font-size: 25px;
+            color: #818181;
+            display: block;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover {
+            color: #f1f1f1;
+        }
+
+        .sidebar .closebtn {
+            position: absolute;
+            top: 0;
+            right: 25px;
+            font-size: 36px;
+            margin-left: 50px;
+        }
+
+        .openbtn {
+            font-size: 20px;
+            cursor: pointer;
+            background-color: #111;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+        }
+
+        .openbtn:hover {
+            background-color: #444;
+        }
+
+        #main {
+            transition: margin-left .5s;
+        }
+
+        /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
+        @media screen and (max-height: 450px) {
+            .sidebar {
+                padding-top: 15px;
+            }
+
+            .sidebar a {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="mySidebar" class="sidebar">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
+        <a href="#">About</a>
+        <a href="#">Services</a>
+        <a href="#">Clients</a>
+        <a href="#">Contact</a>
+    </div>
+
+    <div id="main">
+        <!-- <button class="openbtn" onclick="openNav()">☰ Open Sidebar</button> -->
+        <div id="map" style="width: 100%; height: 100vh; "></div>
+    </div>
+
+    <script>
+
+
+
+        // let circle;
+        // let directionsFrom = '';
+        // const mainData = [];
+        // let map;
+        // let setCenter = true;
+        // let currentPoly;
+        // var input = document.getElementById('searchTextField');
+        // const pannel = document.getElementById("pannel")
+        // const info = document.getElementById("info")
+        // const modal = document.getElementById("modal")
+
+        // const drivers = [];
+        // const driverNames = [];
+        // const allMarkers = [];
+        // let searchMarker;
+        // const driverMarkers = [];
+        // const markersInPoly = [];
+        // let counts = {};
+
+        const mainData = {
+            data: [],
+            markers: []
+        }
+        const mapCenter = { lat: 6.600276753174846, lng: 42.799430677686445 }
+        const mapZoom = 5
+
+        const spreadsheetLink = `https://docs.google.com/spreadsheets/d/e/2PACX-1vRhEhdFofsY8AQAmhXwFnG4ka7TkAnTEVD9BsJ-E_citAv-Nhx5prRzO-pRdsWK2ZbCzzK1veM47SdJ/pub?output=csv`;
+
+
+        function initMap() {
+
+            map = new google.maps.Map(document.getElementById('map'), {
+                zoom: mapZoom,
+                center: mapCenter,
+                mapTypeId: google.maps.MapTypeId.HYBRID
+            });
+            var infowindow = new google.maps.InfoWindow();
+            var marker, i;
+
+            const geocoder = new google.maps.Geocoder()
+
+
+            d3.csv(spreadsheetLink)
+                .then(data => {
+                    const parsedData = data.map(d => {
+                        const [lng, lat] = d.Coordinates.split(",")
+                        return {
+                            ...d,
+                            lat,
+                            lng
+                        }
+                    })
+
+                    mainData.data.push(...parsedData)
+
+                    mainData.data.forEach(d => {
+                        addMarker(d)
+                    })
+                })
+
+
+
+            function addMarker(pin) {
+
+                const icon = {
+                    url: "icons/icon.png", // url
+                    scaledSize: new google.maps.Size(30, 30), // size
+                };
+
+                const marker = new google.maps.Marker({
+                    position: { lng: +pin.lng, lat: +pin.lat },
+                    map: map,
+                    icon: icon,
+                });
+
+                marker.addListener('mouseover', function () { });
+                marker.addListener('mouseout', function () { });
+
+                marker.addListener("click", e => {
+                    const content = `
+                    <div>
+                        <h3> 
+                        ${pin['Address']}, 
+                        ${pin['City']}, 
+                        ${pin['Panel Location']}</h3>
+                    </div>`
+                    infowindow.setContent(content);
+                    infowindow.open(map, marker);
+                });
+
+                return marker
+            }
+
+            // var options = {
+            //     componentRestrictions: { country: "us" }
+            // };
+
+
+            // document.addEventListener("click", e => {
+            //     console.log('e.target', e.target);
+
+            //     if (e.target.classList.contains("item")) {
+            //         const data = e.target.dataset.address
+            //         console.log('data', data);
+            //         buildDirections(data)
+            //     }
+
+            //     if (e.target.classList.contains("removeAddresses")) {
+            //         info.style.display = 'none'
+            //     }
+
+            //     if (e.target.classList.contains("removeDirections")) {
+            //         document.getElementById('directions').innerHTML = '';
+            //     }
+
+            //     if (e.target.classList.contains("resetMap")) {
+
+            //         if (searchMarker) searchMarker.setMap(null)
+            //         allMarkers.forEach(marker => marker.setMap(null)) // clear prev markers
+            //         map.setCenter(mapCenter)
+            //         map.setZoom(mapZoom)
+
+            //         pannel.style.display = 'none'
+            //         input.value = '';
+            //     }
+            // })
+
+        }
+
+        function openNav() {
+            document.getElementById("mySidebar").style.width = "250px";
+            document.getElementById("main").style.marginLeft = "250px";
+        }
+
+        function closeNav() {
+            document.getElementById("mySidebar").style.width = "0";
+            document.getElementById("main").style.marginLeft = "0";
+        }
+    </script>
+
+    <script
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAoyZ_yVsI5N8KhjbWRyQeme1Pfz2DRYYc&callback=initMap&libraries=places,drawing,geometry&v=weekly"
+        async></script>
+</body>
+
+</html>
