@@ -4,12 +4,17 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://d3js.org/d3.v7.min.js"></script>
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@300;400;500;600;700&display=swap">
+
 
     <style>
         body {
-            font-family: "Lato", sans-serif;
             padding: 0px;
             margin: 0px;
+            font-family: "Libre Franklin", Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.5;
         }
 
         .sidebar {
@@ -22,7 +27,6 @@
             overflow-x: hidden;
             transition: 0.5s;
         }
-
 
         .sidebar .closebtn {
             position: absolute;
@@ -71,6 +75,7 @@
         }
 
         .descr {
+            font-family: "Libre Franklin";
             padding: 10px;
         }
 
@@ -218,7 +223,7 @@
             function addMarker(pin) {
 
                 const icon = {
-                    url: "icons/icon.png", // url
+                    url: "icons/flowing tap icon 2.png", // url
                     scaledSize: new google.maps.Size(30, 30), // size
                 };
 
