@@ -1,290 +1,291 @@
 <!DOCTYPE html>
 <html>
-
-<head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script src="https://d3js.org/d3.v7.min.js"></script>
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@300;400;500;600;700&display=swap">
-
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@300;400;500;600;700&display=swap"
+    />
 
     <style>
-        body {
-            padding: 0px;
-            margin: 0px;
-            font-family: "Libre Franklin", Arial, sans-serif;
-            font-size: 14px;
-            line-height: 1.5;
-        }
+      body {
+        padding: 0px;
+        margin: 0px;
+        font-family: "Libre Franklin", Arial, sans-serif;
+        font-size: 14px;
+        line-height: 1.5;
+      }
 
+      .sidebar {
+        height: 100%;
+        width: 0;
+        position: fixed;
+        z-index: 1;
+        top: 0;
+        left: 0;
+        overflow-x: hidden;
+        transition: 0.5s;
+      }
+
+      .sidebar .closebtn {
+        position: absolute;
+        top: 0;
+        right: 25px;
+        font-size: 36px;
+        margin-left: 50px;
+      }
+
+      .openbtn {
+        cursor: pointer;
+        color: white;
+        padding: 10px 15px;
+        border: none;
+      }
+
+      .openbtn:hover {
+        background-color: #444;
+      }
+
+      #main {
+        transition: margin-left 0.5s;
+      }
+
+      .title {
+        padding: 20px 10px;
+        background-color: #02499b;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+      }
+
+      .title > i {
+        padding-right: 30px;
+      }
+
+      .img {
+        height: 200px;
+        max-height: 200px;
+        overflow: hidden;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .descr {
+        font-family: "Libre Franklin";
+        padding: 10px;
+      }
+
+      /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
+      @media screen and (max-height: 450px) {
         .sidebar {
-            height: 100%;
-            width: 0;
-            position: fixed;
-            z-index: 1;
-            top: 0;
-            left: 0;
-            overflow-x: hidden;
-            transition: 0.5s;
         }
+      }
 
-        .sidebar .closebtn {
-            position: absolute;
-            top: 0;
-            right: 25px;
-            font-size: 36px;
-            margin-left: 50px;
-        }
+      .gg-arrow-left {
+        box-sizing: border-box;
+        position: relative;
+        display: block;
+        transform: scale(var(--ggs, 1));
+        width: 22px;
+        height: 22px;
+        cursor: pointer;
+      }
 
-        .openbtn {
-            cursor: pointer;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-        }
+      .gg-arrow-left::after,
+      .gg-arrow-left::before {
+        content: "";
+        display: block;
+        box-sizing: border-box;
+        position: absolute;
+        left: 3px;
+      }
 
-        .openbtn:hover {
-            background-color: #444;
-        }
+      .gg-arrow-left::after {
+        width: 8px;
+        height: 8px;
+        border-bottom: 2px solid;
+        border-left: 2px solid;
+        transform: rotate(45deg);
+        bottom: 7px;
+      }
 
-        #main {
-            transition: margin-left .5s;
-        }
+      .gg-arrow-left::before {
+        width: 16px;
+        height: 2px;
+        bottom: 10px;
+        background: currentColor;
+      }
 
-        .title {
-            padding: 20px 10px;
-            background-color: #02499b;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-        }
+      .images {
+        width: 100%;
+        max-height: 120px;
+        overflow: hidden;
+        display: flex;
+        align-content: center;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        position: relative;
+      }
 
-        .title>i {
-            padding-right: 30px;
-        }
+      .bottom-left {
+        position: absolute;
+        bottom: 8px;
+        left: 16px;
+        color: white;
+      }
 
-        .img {
-            height: 200px;
-            max-height: 200px;
-            overflow: hidden;
-
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .descr {
-            font-family: "Libre Franklin";
-            padding: 10px;
-        }
-
-        /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
-        @media screen and (max-height: 450px) {
-            .sidebar {}
-        }
-
-
-        .gg-arrow-left {
-            box-sizing: border-box;
-            position: relative;
-            display: block;
-            transform: scale(var(--ggs, 1));
-            width: 22px;
-            height: 22px;
-            cursor: pointer;
-
-        }
-
-        .gg-arrow-left::after,
-        .gg-arrow-left::before {
-            content: "";
-            display: block;
-            box-sizing: border-box;
-            position: absolute;
-            left: 3px
-        }
-
-        .gg-arrow-left::after {
-            width: 8px;
-            height: 8px;
-            border-bottom: 2px solid;
-            border-left: 2px solid;
-            transform: rotate(45deg);
-            bottom: 7px
-        }
-
-        .gg-arrow-left::before {
-            width: 16px;
-            height: 2px;
-            bottom: 10px;
-            background: currentColor
-        }
-
-        .images {
-            width: 100%;
-            max-height: 120px;
-            overflow: hidden;
-            display: flex;
-            align-content: center;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            position: relative;
-        }
-
-        .bottom-left {
-            position: absolute;
-            bottom: 8px;
-            left: 16px;
-            color: white
-        }
-
-        h3{
-            font-family: "Libre Franklin";
-        }
+      h3 {
+        font-family: "Libre Franklin";
+      }
     </style>
-</head>
+  </head>
 
-<body>
-
+  <body>
     <div id="mySidebar" class="sidebar">
-        <!-- <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a> -->
-
+      <!-- <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a> -->
     </div>
 
     <div id="main">
-        <!-- <button class="openbtn" onclick="openNav()">☰ Open Sidebar</button> -->
-        <div id="map" style="width: 100%; height: 100vh; "></div>
+      <!-- <button class="openbtn" onclick="openNav()">☰ Open Sidebar</button> -->
+      <div id="map" style="width: 100%; height: 100vh"></div>
     </div>
 
     <script>
+      // let circle;
+      // let directionsFrom = '';
+      // const mainData = [];
+      // let map;
+      // let setCenter = true;
+      // let currentPoly;
+      // var input = document.getElementById('searchTextField');
+      // const pannel = document.getElementById("pannel")
+      // const info = document.getElementById("info")
 
+      // const drivers = [];
+      // const driverNames = [];
+      // const allMarkers = [];
+      // let searchMarker;
+      // const driverMarkers = [];
+      // const markersInPoly = [];
+      // let counts = {};
 
+      const sidebar = document.getElementById("mySidebar");
+      const mainData = {
+        data: [],
+        markers: [],
+      };
+      const mapCenter = { lat: 6.600276753174846, lng: 42.799430677686445 };
+      const mapZoom = 5;
 
-        // let circle;
-        // let directionsFrom = '';
-        // const mainData = [];
-        // let map;
-        // let setCenter = true;
-        // let currentPoly;
-        // var input = document.getElementById('searchTextField');
-        // const pannel = document.getElementById("pannel")
-        // const info = document.getElementById("info")
+      const spreadsheetLink = `https://docs.google.com/spreadsheets/d/e/2PACX-1vRhEhdFofsY8AQAmhXwFnG4ka7TkAnTEVD9BsJ-E_citAv-Nhx5prRzO-pRdsWK2ZbCzzK1veM47SdJ/pub?output=csv`;
 
-        // const drivers = [];
-        // const driverNames = [];
-        // const allMarkers = [];
-        // let searchMarker;
-        // const driverMarkers = [];
-        // const markersInPoly = [];
-        // let counts = {};
+      function initMap() {
+        map = new google.maps.Map(document.getElementById("map"), {
+          zoom: mapZoom,
+          center: mapCenter,
+          mapTypeId: google.maps.MapTypeId.HYBRID,
+        });
+        var infowindow = new google.maps.InfoWindow();
+        var marker, i;
 
-        const sidebar = document.getElementById("mySidebar")
-        const mainData = {
-            data: [],
-            markers: []
-        }
-        const mapCenter = { lat: 6.600276753174846, lng: 42.799430677686445 }
-        const mapZoom = 5
+        const geocoder = new google.maps.Geocoder();
 
-        const spreadsheetLink = `https://docs.google.com/spreadsheets/d/e/2PACX-1vRhEhdFofsY8AQAmhXwFnG4ka7TkAnTEVD9BsJ-E_citAv-Nhx5prRzO-pRdsWK2ZbCzzK1veM47SdJ/pub?output=csv`;
+        google.maps.event.addListener(map, "mousedown", function (event) {
+          closeNav();
+        });
 
+        d3.csv(spreadsheetLink).then((data) => {
+          const parsedData = data.map((d) => {
+            const [lng, lat] = d.Coordinates.split(",");
+            return {
+              ...d,
+              lat,
+              lng,
+            };
+          });
 
-        function initMap() {
+          mainData.data.push(...parsedData);
 
-            map = new google.maps.Map(document.getElementById('map'), {
-                zoom: mapZoom,
-                center: mapCenter,
-                mapTypeId: google.maps.MapTypeId.HYBRID
-            });
-            var infowindow = new google.maps.InfoWindow();
-            var marker, i;
+          mainData.data.forEach((d) => {
+            addMarker(d);
+          });
+        });
 
-            const geocoder = new google.maps.Geocoder()
+        function addMarker(pin) {
+          const icon = {
+            url: "icons/flowing tap icon 2.png", // url
+            scaledSize: new google.maps.Size(30, 30), // size
+          };
 
-            google.maps.event.addListener(map, 'mousedown', function (event) {
-                closeNav()
-            });
+          const marker = new google.maps.Marker({
+            position: { lng: +pin.lng, lat: +pin.lat },
+            map: map,
+            icon: icon,
+          });
 
-            d3.csv(spreadsheetLink)
-                .then(data => {
-                    const parsedData = data.map(d => {
-                        const [lng, lat] = d.Coordinates.split(",")
-                        return {
-                            ...d,
-                            lat,
-                            lng
-                        }
-                    })
+          marker.addListener("mouseover", function () {});
+          marker.addListener("mouseout", function () {});
 
-                    mainData.data.push(...parsedData)
-
-                    mainData.data.forEach(d => {
-                        addMarker(d)
-                    })
-                })
-
-
-
-            function addMarker(pin) {
-
-                const icon = {
-                    url: "icons/flowing tap icon 2.png", // url
-                    scaledSize: new google.maps.Size(30, 30), // size
-                };
-
-                const marker = new google.maps.Marker({
-                    position: { lng: +pin.lng, lat: +pin.lat },
-                    map: map,
-                    icon: icon,
-                });
-
-                marker.addListener('mouseover', function () { });
-                marker.addListener('mouseout', function () { });
-
-                marker.addListener("click", e => {
-                    const content = `
+          marker.addListener("click", (e) => {
+            const content = `
                     <div>
                         <h3> 
-                        ${pin['Name']}
+                        ${pin["Name"]}
                         </h3>
-                    </div>`
-                    infowindow.setContent(content);
-                    infowindow.open(map, marker);
+                    </div>`;
+            infowindow.setContent(content);
+            infowindow.open(map, marker);
 
-                    displayInfo(pin)
-                });
-                return marker
+            displayInfo(pin);
+          });
+          return marker;
+        }
+
+        function displayInfo(pin) {
+          console.log("pinssssssssssssss", pin);
+
+          let videoCover = undefined
+          const images = [...Array(20)]
+            .map((d, key) => {
+              return pin["Image" + key];
+            })
+            .filter((d) => d);
+
+          images.map((d) => {
+            console.log(d);
+            if (d.includes("youtube.com")) {
+              const id = d.split("watch?v=")[1];
+              const url = `https://img.youtube.com/vi/${id}/0.jpg`;
+
+              videoCover = url;
             }
+            return d;
+          });
 
-            function displayInfo(pin) {
-                console.log('pin', pin);
+          console.log("images", images);
 
-                const images = [...Array(20)].map((d, key) => {
-                    return pin['Image' + key]
-                }).filter(d => d)
+          const div = document.createElement("div");
+          div.className = "images";
+          const bdiv = document.createElement("div");
+          bdiv.className = "bottom-left";
+          bdiv.innerText = images.length + " photos";
 
-                console.log('images', images);
+          const image = document.createElement("img");
+          image.src = videoCover || pin["Image1"];
+          image.addEventListener("click", () => {
+            openLightBox(images);
+          });
+          div.appendChild(image);
+          div.appendChild(bdiv);
 
-                const div = document.createElement("div")
-                div.className = "images"
-                const bdiv = document.createElement("div")
-                bdiv.className = "bottom-left"
-                bdiv.innerText = images.length + " photos";
-
-                const image = document.createElement("img")
-                image.src = pin['Image1']
-                image.addEventListener("click", () => {
-                    openLightBox(images)
-                })
-                div.appendChild(image)
-                div.appendChild(bdiv)
-
-
-                html = `<div>
+          html = `<div>
                         <div class="img">
-                            <img src="${pin['Image1']}">    
+                            <img src="${videoCover || pin["Image1"]}">    
                         </div>
                         <div class="title">
                             <i class="gg-arrow-left" onclick="closeNav()"></i>
@@ -292,40 +293,45 @@
                         </div>
                         <div class="descr">${pin.Description}</div>
                     </div>
-                `
-                sidebar.innerHTML = html
-                sidebar.appendChild(div)
+                `;
+          sidebar.innerHTML = html;
+          sidebar.appendChild(div);
 
-                openNav()
-                refreshFsLightbox()
-            }
+          openNav();
+          refreshFsLightbox();
         }
+      }
 
-        function openLightBox(data) {
-            console.log('data', data);
-            var lightbox = new FsLightbox();
-            lightbox.props.sources = data;
-            lightbox.props.type = "image";
-            lightbox.open();
-        }
+      function openLightBox(data) {
+        console.log("data--->>>>", data);
+        var lightbox = new FsLightbox();
+        lightbox.props.sources = data;
 
-        function openNav() {
-            document.getElementById("mySidebar").style.width = "350px";
-            document.getElementById("main").style.marginLeft = "350px";
-        }
+        lightbox.props.types = data.map((d) => {
+          if (d.includes("youtube.com")) {
+            return "youtube";
+          }
+          return "image";
+        });
+        lightbox.open();
+      }
 
-        function closeNav() {
-            document.getElementById("mySidebar").style.width = "0";
-            document.getElementById("main").style.marginLeft = "0";
-        }
+      function openNav() {
+        document.getElementById("mySidebar").style.width = "350px";
+        document.getElementById("main").style.marginLeft = "350px";
+      }
 
+      function closeNav() {
+        document.getElementById("mySidebar").style.width = "0";
+        document.getElementById("main").style.marginLeft = "0";
+      }
     </script>
-<!--  AIzaSyAoyZ_yVsI5N8KhjbWRyQeme1Pfz2DRYYc -->
+    <!--  AIzaSyAoyZ_yVsI5N8KhjbWRyQeme1Pfz2DRYYc -->
     <script
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAoyZ_yVsI5N8KhjbWRyQeme1Pfz2DRYYc&callback=initMap&libraries=places,drawing,geometry&v=weekly"
-        async></script>
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAoyZ_yVsI5N8KhjbWRyQeme1Pfz2DRYYc&callback=initMap&libraries=places,drawing,geometry&v=weekly"
+      async
+    ></script>
 
     <script src="fslightbox.js"></script>
-</body>
-
+  </body>
 </html>
